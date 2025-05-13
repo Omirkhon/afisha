@@ -4,6 +4,11 @@ CREATE TABLE IF NOT EXISTS users (
     name varchar(250) not null
 );
 
+CREATE TABLE IF NOT EXISTS categories (
+    id serial primary key,
+    name varchar(50) unique not null
+);
+
 CREATE TABLE IF NOT EXISTS events (
     id serial primary key,
     title varchar(120) not null,
@@ -18,27 +23,22 @@ CREATE TABLE IF NOT EXISTS events (
     state varchar not null,
     initiator_id int references users(id),
     views int,
-    confirmed_requests int
-);
-
-CREATE TABLE IF NOT EXISTS categories (
-    id serial primary key,
-    name varchar(50) unique not null ,
-    event_id int references events(id)
+    confirmed_requests int,
+    lon float not null,
+    lat float not null,
+    category_id int references categories(id)
 );
 
 CREATE TABLE IF NOT EXISTS compilations (
     id serial primary key,
     title varchar(50) not null,
-    pinned boolean not null,
-    event_id int references events(id)
+    pinned boolean not null
 );
 
-CREATE TABLE IF NOT EXISTS locations (
+CREATE TABLE IF NOT EXISTS events_compilations (
     id serial primary key,
-    lon float not null,
-    lat float not null,
-    event_id int references events(id) not null
+    event_id int references events(id),
+    compilation_id int references compilations(id)
 );
 
 CREATE TABLE IF NOT EXISTS requests (
