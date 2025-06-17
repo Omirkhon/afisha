@@ -13,7 +13,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCompilationDto {
     final Set<Integer> events = new HashSet<>();
-    boolean pinned;
+    Boolean pinned;
     @NotBlank(message = "Название не может быть пустым")
     @Size(min = 1, max = 50, message = "Допустимая длина названия 1-50 символов")
     String title;

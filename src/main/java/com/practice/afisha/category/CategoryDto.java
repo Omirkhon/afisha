@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryDto {
-    int id;
     @NotBlank(message = "Название не может быть пустым")
     @Size(min = 1, max = 50, message = "Допустимая длина 1-50 символов")
     String name;
+    int id;
 }

@@ -1,9 +1,7 @@
 package com.practice.afisha.event;
 
 import com.practice.afisha.category.CategoryDto;
-import com.practice.afisha.location.Location;
 import com.practice.afisha.user.UserShortDto;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class EventFullDto {
     int id;
     String annotation;
-    CategoryDto categoryDto;
+    CategoryDto category;
     int confirmedRequests;
     String createdOn;
     String description;

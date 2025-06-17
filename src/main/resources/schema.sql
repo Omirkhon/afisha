@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS requests;
+
+DROP TABLE IF EXISTS events_compilations;
+
+DROP TABLE IF EXISTS compilations;
+
+DROP TABLE IF EXISTS events;
+
+DROP TABLE IF EXISTS categories;
+
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE IF NOT EXISTS users (
     id serial primary key,
     email varchar(254) not null,

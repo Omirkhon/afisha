@@ -34,15 +34,15 @@ public class Event {
     boolean requestModeration;
     String annotation;
     @JoinColumn(name = "participant_limit")
-    int participantLimit;
-    @Enumerated
+    int participantLimit = 0;
+    @Enumerated(value = EnumType.STRING)
     EventState state;
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     User initiator;
     int views;
     @JoinColumn(name = "confirmed_requests")
-    int confirmedRequests;
+    int confirmedRequests = 0;
     float lon;
     float lat;
     @ManyToOne

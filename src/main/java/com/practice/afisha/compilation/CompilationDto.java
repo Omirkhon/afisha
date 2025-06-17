@@ -12,8 +12,8 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompilationDto {
-    int id;
     boolean pinned;
+    int id;
     @NotBlank(message = "Название не может быть пустым")
     String title;
     List<EventShortDto> events = new ArrayList<>();

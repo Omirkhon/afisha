@@ -1,7 +1,7 @@
 package com.practice.afisha.event;
 
-import com.practice.afisha.location.Location;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -19,9 +19,10 @@ public class NewEventDto {
     String description;
     String eventDate;
     Location location;
-    boolean paid;
-    int participantLimit;
-    boolean requestModeration;
+    Boolean paid;
+    @PositiveOrZero
+    Integer participantLimit;
+    Boolean requestModeration;
     @Size(min = 3, max = 120, message = "Допустимая длина название 3-120 символов")
     @NotBlank(message = "Название не может быть пустым")
     String title;
