@@ -57,7 +57,7 @@ public class EventService {
                 List<Integer> usersList = List.of(users);
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, eventStates, categoriesList, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
@@ -65,7 +65,7 @@ public class EventService {
             if (users != null) {
                 List<Integer> usersList = List.of(users);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, eventStates, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
@@ -73,13 +73,13 @@ public class EventService {
             if (categories != null) {
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         eventStates, categoriesList, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
             }
 
-            List<Event> events = eventRepository.findAllByStateInAndEventDateAfterAndEventDateBefore(
+            List<Event> events = eventRepository.findAllByStateInAndEventDateAfterAndEventDateBeforeOrderById(
                     eventStates, start, end, pageable).getContent();
             statisticsService.increaseViews(events);
             return events;
@@ -88,7 +88,7 @@ public class EventService {
                 List<Integer> usersList = List.of(users);
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, categoriesList, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
@@ -96,7 +96,7 @@ public class EventService {
             if (users != null) {
                 List<Integer> usersList = List.of(users);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByInitiatorIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
@@ -104,13 +104,13 @@ public class EventService {
             if (categories != null) {
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByCategoryIdInAndEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         categoriesList, start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;
             }
             if (categories == null && users == null) {
-                List<Event> events = eventRepository.findAllByEventDateAfterAndEventDateBefore(
+                List<Event> events = eventRepository.findAllByEventDateAfterAndEventDateBeforeOrderById(
                         start, end, pageable).getContent();
                 statisticsService.increaseViews(events);
                 return events;

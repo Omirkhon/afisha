@@ -13,28 +13,28 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findAllByInitiatorId(int initiatorId, Pageable pageable);
 
-    Page<Event> findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(List<Integer> users, List<EventState> states,
+    Page<Event> findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(List<Integer> users, List<EventState> states,
                                                                                                    List<Integer> categories, LocalDateTime rangeStart,
                                                                                                    LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBefore(List<Integer> users, List<Integer> categories,
+    Page<Event> findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(List<Integer> users, List<Integer> categories,
                                                                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBefore(List<Integer> users, List<EventState> states,
+    Page<Event> findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBeforeOrderById(List<Integer> users, List<EventState> states,
                                                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(List<EventState> states, List<Integer> categories, LocalDateTime rangeStart,
+    Page<Event> findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(List<EventState> states, List<Integer> categories, LocalDateTime rangeStart,
                                                                                    LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByInitiatorIdInAndEventDateAfterAndEventDateBefore(List<Integer> users, LocalDateTime rangeStart,
+    Page<Event> findAllByInitiatorIdInAndEventDateAfterAndEventDateBeforeOrderById(List<Integer> users, LocalDateTime rangeStart,
                                                                           LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByCategoryIdInAndEventDateAfterAndEventDateBefore(List<Integer> categories, LocalDateTime rangeStart,
+    Page<Event> findAllByCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(List<Integer> categories, LocalDateTime rangeStart,
                                                                          LocalDateTime rangeEnd, Pageable pageable);
 
-    Page<Event> findAllByEventDateAfterAndEventDateBefore(LocalDateTime start, LocalDateTime end, Pageable pageable);
+    Page<Event> findAllByEventDateAfterAndEventDateBeforeOrderById(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
-    Page<Event> findAllByStateInAndEventDateAfterAndEventDateBefore(List<EventState> states, LocalDateTime rangeStart,
+    Page<Event> findAllByStateInAndEventDateAfterAndEventDateBeforeOrderById(List<EventState> states, LocalDateTime rangeStart,
                                                                     LocalDateTime rangeEnd, Pageable pageable);
 
     Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByEventDate(String text, String text2,
