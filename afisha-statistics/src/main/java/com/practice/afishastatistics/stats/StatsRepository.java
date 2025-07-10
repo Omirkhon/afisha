@@ -43,26 +43,4 @@ public interface StatsRepository extends JpaRepository<Visit, Integer> {
             "order by count(distinct v.ip) desc")
     List<ViewStats> findAllByTimestampAfterAndTimestampBeforeAndUniqueHits(LocalDateTime start,
                                                                            LocalDateTime end);
-
-    @Query("select count(v.ip) as hits from Visit v " +
-            "where v.uri in ?1 " +
-            "group by v.uri " +
-            "order by hits desc")
-    List<Integer> findNumOfHitsByUriIn(List<String> uris);
-
-    @Query("select count(distinct v.ip) as hits from Visit v " +
-            "where v.uri in ?1 " +
-            "group by v.uri " +
-            "order by hits desc")
-    List<Integer> findNumOfUniqueHitsByUriIn(List<String> uris);
-
-    @Query("select count(distinct v.ip) as hits from Visit v " +
-            "group by v.uri " +
-            "order by hits desc")
-    List<Integer> findNumOfUniqueHits();
-
-    @Query("select count(v.ip) as hits from Visit v " +
-            "group by v.uri " +
-            "order by hits desc")
-    List<Integer> findNumOfHits();
 }

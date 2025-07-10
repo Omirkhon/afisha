@@ -10,6 +10,7 @@
     </parent>
     <groupId>com.practice</groupId>
     <artifactId>afisha</artifactId>
+    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>afisha</name>
     <description>afisha</description>
@@ -17,6 +18,10 @@
     <licenses>
         <license/>
     </licenses>
+    <modules>
+        <module>afisha-server</module>
+        <module>afisha-statistics</module>
+    </modules>
     <developers>
         <developer/>
     </developers>

@@ -25,20 +25,6 @@ public class StatsService {
         }
     }
 
-    public List<Integer> getNumOfHits(String[] uris, Boolean unique) {
-        if (uris == null && unique) {
-            return statsRepository.findNumOfUniqueHits();
-        } else if (uris == null) {
-            return statsRepository.findNumOfHits();
-        } else if (unique) {
-            List<String> uriList = List.of(uris);
-            return statsRepository.findNumOfUniqueHitsByUriIn(uriList);
-        } else {
-            List<String> uriList = List.of(uris);
-            return statsRepository.findNumOfHitsByUriIn(uriList);
-        }
-    }
-
     public void saveRequestInfo(EndpointHit endpointHit, LocalDateTime date) {
         Visit visit = new Visit();
 
