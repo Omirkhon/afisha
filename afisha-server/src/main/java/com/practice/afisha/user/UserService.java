@@ -65,7 +65,6 @@ public class UserService {
             event.setRequestModeration(newEvent.getRequestModeration());
         }
         event.setState(EventState.PENDING);
-        event.setViews(0);
 
         eventRepository.save(event);
         return event;

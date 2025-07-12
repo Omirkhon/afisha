@@ -1,5 +1,7 @@
 package com.practice.afisha.event;
 
+import com.practice.afisha.utils.EndpointHit;
+import com.practice.afisha.utils.ViewStats;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.List;
 public class EventPublicController {
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private final StatisticsClient statisticsClient;
 
     @GetMapping
     public List<EventShortDto> findFilteredAndSortedEvents(@RequestParam(required = false) String text,
@@ -30,6 +33,20 @@ public class EventPublicController {
     @GetMapping("/{id}")
     public EventFullDto findById(@PathVariable int id, HttpServletRequest request) {
         String ip = request.getRemoteAddr();
-        return eventMapper.toFullDto(eventService.findById(id, ip));
+        String uri = "/events/{id}";
+
+        EndpointHit endpointHit = new EndpointHit();
+        endpointHit.setIp(ip);
+        endpointHit.setApp("afisha-app");
+        endpointHit.setUri(uri);
+        String[] uris = new String[]{uri};
+
+        statisticsClient.create(endpointHit);
+        List<ViewStats> statsList = statisticsClient.getStatsInfo("1900-01-01 00:00:00", "2100-01-01 00:00:00", uris, true).getBody();
+        long hits = 0;
+        if (statsList != null && !statsList.isEmpty()) {
+            hits = statsList.get(0).getHits();
+        }
+        return eventMapper.toFullDto(eventService.findById(id), hits);
     }
 }

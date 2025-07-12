@@ -19,7 +19,6 @@ import java.util.List;
 public class EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final StatisticsService statisticsService;
 
     public List<Event> findFilteredEvents(Integer[] users, String[] states,
                                           Integer[] categories, String rangeStart,
@@ -57,63 +56,47 @@ public class EventService {
                 List<Integer> usersList = List.of(users);
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, eventStates, categoriesList, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
             if (users != null) {
                 List<Integer> usersList = List.of(users);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByInitiatorIdInAndStateInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, eventStates, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
             if (categories != null) {
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByStateInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         eventStates, categoriesList, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
 
-            List<Event> events = eventRepository.findAllByStateInAndEventDateAfterAndEventDateBeforeOrderById(
+            return eventRepository.findAllByStateInAndEventDateAfterAndEventDateBeforeOrderById(
                     eventStates, start, end, pageable).getContent();
-            statisticsService.increaseViews(events);
-            return events;
         } else {
             if (users != null && categories != null) {
                 List<Integer> usersList = List.of(users);
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByInitiatorIdInAndCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, categoriesList, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
             if (users != null) {
                 List<Integer> usersList = List.of(users);
 
-                List<Event> events = eventRepository.findAllByInitiatorIdInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByInitiatorIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         usersList, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
             if (categories != null) {
                 List<Integer> categoriesList = List.of(categories);
 
-                List<Event> events = eventRepository.findAllByCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         categoriesList, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
             if (categories == null && users == null) {
-                List<Event> events = eventRepository.findAllByEventDateAfterAndEventDateBeforeOrderById(
+                return eventRepository.findAllByEventDateAfterAndEventDateBeforeOrderById(
                         start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
         }
         return List.of();
@@ -207,141 +190,97 @@ public class EventService {
         if (sort != null) {
             if (sort.equals("EVENT_DATE") && onlyAvailable && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsByCategoryIdInAndPaidOrderByEventDate(
+                return eventRepository.findAvailableEventsByCategoryIdInAndPaidOrderByEventDate(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && onlyAvailable && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsByCategoryIdInAndPaidOrderByViews(text, text, start, end,
+                return eventRepository.findAvailableEventsByCategoryIdInAndPaidOrderByViews(text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE") && onlyAvailable && categories != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsByCategoryIdInOrderByEventDate(
+                return eventRepository.findAvailableEventsByCategoryIdInOrderByEventDate(
                         text, text, start, end,
                         categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && onlyAvailable && categories != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsByCategoryIdInOrderByViews(text, text, start, end,
+                return eventRepository.findAvailableEventsByCategoryIdInOrderByViews(text, text, start, end,
                         categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE") && onlyAvailable && paid != null) {
-                List<Event> events = eventRepository.findAvailableEventsByPaidOrderByEventDate(
+                return eventRepository.findAvailableEventsByPaidOrderByEventDate(
                         text, text, start, end,
                         paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && onlyAvailable && paid != null) {
-                List<Event> events = eventRepository.findAvailableEventsByPaidOrderByViews(
+                return eventRepository.findAvailableEventsByPaidOrderByViews(
                         text, text, start, end,
                         paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE") && onlyAvailable) {
-                List<Event> events = eventRepository.findAvailableEventsOrderByEventDate(
+                return eventRepository.findAvailableEventsOrderByEventDate(
                         text, text, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && onlyAvailable) {
-                List<Event> events = eventRepository.findAvailableEventsOrderByViews(
+                return eventRepository.findAvailableEventsOrderByViews(
                         text, text, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE") && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByEventDate(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByEventDate(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByViews(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS") && paid != null) {
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByViews(
                         text, text, start, end,
                         paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE") && paid != null) {
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByEventDate(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByEventDate(
                         text, text, start, end,
                         paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("VIEWS")) {
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByViews(
                         text, text, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (sort.equals("EVENT_DATE")) {
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByEventDate(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByEventDate(
                         text, text, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
         } else {
             if (onlyAvailable && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsByCategoryIdInAndPaid(
+                return eventRepository.findAvailableEventsByCategoryIdInAndPaid(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (onlyAvailable && categories != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAvailableEventsCategoryIdIn(
+                return eventRepository.findAvailableEventsCategoryIdIn(
                         text, text, start, end,
                         categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (onlyAvailable && paid != null) {
-                List<Event> events = eventRepository.findAvailableEventsByPaid(
+                return eventRepository.findAvailableEventsByPaid(
                         text, text, start, end,
                         paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdIn(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdIn(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (categories != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullAndCategoryIdIn(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullAndCategoryIdIn(
                         text, text, start, end, categoriesIds, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (paid != null) {
-                List<Event> events = eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(
                         text, text, start, end, paid, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             } else if (onlyAvailable) {
-                List<Event> events = eventRepository.findAvailableEvents(
+                return eventRepository.findAvailableEvents(
                         text, text, start, end, pageable).getContent();
-                statisticsService.increaseViews(events);
-                return events;
             }
         }
         return List.of();
     }
 
-    public Event findById(int id, String ip) {
-        Event event =  eventRepository.findByIdAndState(id, EventState.PUBLISHED).orElseThrow(() -> new NotFoundException("Событие по id=" + id + " не найдено."));
-        statisticsService.increaseViews(event, ip);
-        return event;
+    public Event findById(int id) {
+        return eventRepository.findByIdAndState(id, EventState.PUBLISHED).orElseThrow(() -> new NotFoundException("Событие по id=" + id + " не найдено."));
     }
 }

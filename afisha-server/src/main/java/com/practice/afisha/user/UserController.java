@@ -30,17 +30,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/events")
     public EventFullDto createEvent(@PathVariable int userId, @RequestBody @Valid NewEventDto newEvent) {
-        return eventMapper.toFullDto(userService.createEvent(userId, newEvent));
+        return eventMapper.toFullDto(userService.createEvent(userId, newEvent), 0L);
     }
 
     @GetMapping("/{userId}/events/{eventId}")
     public EventFullDto findEventById(@PathVariable int userId, @PathVariable int eventId) {
-        return eventMapper.toFullDto(userService.findEventById(userId, eventId));
+        return eventMapper.toFullDto(userService.findEventById(userId, eventId), 0L);
     }
 
     @PatchMapping("/{userId}/events/{eventId}")
     public EventFullDto updateEvent(@PathVariable int userId, @PathVariable int eventId, @RequestBody @Valid UpdateEventUserRequest eventUpdate) {
-        return eventMapper.toFullDto(userService.updateEvent(userId, eventId, eventUpdate));
+        return eventMapper.toFullDto(userService.updateEvent(userId, eventId, eventUpdate), 0L);
     }
 
     @GetMapping("/{userId}/events/{eventId}/requests")

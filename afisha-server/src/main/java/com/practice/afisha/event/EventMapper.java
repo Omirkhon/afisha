@@ -33,7 +33,7 @@ public class EventMapper {
         return events.stream().map(this::toShortDto).toList();
     }
 
-    public EventFullDto toFullDto(Event event) {
+    public EventFullDto toFullDto(Event event, Long views) {
         EventFullDto fullDto = new EventFullDto();
 
         fullDto.setId(event.getId());
@@ -53,12 +53,12 @@ public class EventMapper {
         fullDto.setRequestModeration(event.isRequestModeration());
         fullDto.setState(event.getState().toString());
         fullDto.setTitle(event.getTitle());
-        fullDto.setViews(event.getViews());
+        fullDto.setViews(views);
 
         return fullDto;
     }
 
     public List<EventFullDto> toFullDto(List<Event> events) {
-        return events.stream().map(this::toFullDto).toList();
+        return events.stream().map(event -> toFullDto(event, 0L)).toList();
     }
 }
