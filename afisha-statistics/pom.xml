@@ -5,23 +5,18 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.practice</groupId>
-    <artifactId>afisha</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>afisha-statistics</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>afisha</name>
-    <description>afisha</description>
+    <name>afisha-statistics</name>
+    <description>afisha-statistics</description>
     <url/>
     <licenses>
         <license/>
     </licenses>
-    <modules>
-        <module>afisha-server</module>
-        <module>afisha-statistics</module>
-    </modules>
     <developers>
         <developer/>
     </developers>
@@ -68,28 +63,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
