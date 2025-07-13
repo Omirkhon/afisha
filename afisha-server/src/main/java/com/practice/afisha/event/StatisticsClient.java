@@ -19,7 +19,7 @@ import java.util.Map;
 public class StatisticsClient {
     private final RestTemplate restTemplate;
 
-    public StatisticsClient(@Value("http://localhost:9090") String url,
+    public StatisticsClient(@Value("${afisha.statistics.url}") String url,
                       RestTemplateBuilder builder) {
         this.restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(url))
@@ -27,7 +27,7 @@ public class StatisticsClient {
     }
 
     public void create(EndpointHit endpointHit) {
-        restTemplate.postForEntity("/hit", endpointHit, Object.class);
+        restTemplate.postForEntity("/hit", endpointHit, EndpointHit.class);
     }
 
     public ResponseEntity<List<ViewStats>> getStatsInfo(String start, String end,
