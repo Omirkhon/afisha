@@ -3,8 +3,10 @@ package com.practice.afisha.rating;
 import com.practice.afisha.error.ConflictException;
 import com.practice.afisha.error.NotFoundException;
 import com.practice.afisha.event.Event;
+import com.practice.afisha.event.EventRatingDto;
 import com.practice.afisha.event.EventRepository;
 import com.practice.afisha.user.User;
+import com.practice.afisha.user.UserRatingDto;
 import com.practice.afisha.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -75,5 +77,23 @@ public class RatingService {
     public List<Rating> findByEventId(int eventId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return ratingRepository.findAllByEventId(pageable, eventId).getContent();
+    }
+
+    public List<EventRatingDto> findAllSortedByLikesRatio(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return eventRepository.findAllSortedByLikesRatio(pageable).getContent();
+    }
+
+    public EventRatingDto findTheMostLikedEvent() {
+        return eventRepository.findTheMostLikedEvent();
+    }
+
+    public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return userRepository.findAllInitiatorsSortedByLikesRatio(pageable).getContent();
+    }
+
+    public UserRatingDto findMostLikedInitiator() {
+        return userRepository.findMostLikedInitiator();
     }
 }

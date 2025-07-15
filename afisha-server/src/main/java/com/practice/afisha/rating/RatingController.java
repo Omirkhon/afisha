@@ -1,5 +1,7 @@
 package com.practice.afisha.rating;
 
+import com.practice.afisha.event.EventRatingDto;
+import com.practice.afisha.user.UserRatingDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +37,27 @@ public class RatingController {
                                          @RequestParam(defaultValue = "0") int from,
                                          @RequestParam(defaultValue = "10") int size) {
         return ratingMapper.toDto(ratingService.findByEventId(eventId, from, size));
+    }
+
+    @GetMapping("/events/likes")
+    public List<EventRatingDto> findAllByLikesRatio(@RequestParam(defaultValue = "0") int from,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        return ratingService.findAllSortedByLikesRatio(from, size);
+    }
+
+    @GetMapping("/events/mostliked")
+    public EventRatingDto findTheMostLikedEvent() {
+        return ratingService.findTheMostLikedEvent();
+    }
+
+    @GetMapping("/users/likes")
+    public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(@RequestParam(defaultValue = "0") int from,
+                                                   @RequestParam(defaultValue = "10") int size) {
+        return ratingService.findAllInitiatorsSortedByLikesRatio(from, size);
+    }
+
+    @GetMapping("/users/mostliked")
+    public UserRatingDto findMostLikedInitiator() {
+        return ratingService.findMostLikedInitiator();
     }
 }

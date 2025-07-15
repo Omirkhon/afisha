@@ -49,15 +49,4 @@ public class EventPublicController {
         }
         return eventMapper.toFullDto(eventService.findById(id), hits);
     }
-
-    @GetMapping("/likes")
-    public List<EventRatingDto> findAllByLikesRatio(@RequestParam(defaultValue = "0") int from,
-                                                    @RequestParam(defaultValue = "10") int size) {
-        return eventService.findAllSortedByLikesRatio(from, size);
-    }
-
-    @GetMapping("/mostliked")
-    public EventRatingDto findTheMostLikedEvent() {
-        return eventService.findTheMostLikedEvent();
-    }
 }
