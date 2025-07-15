@@ -2,6 +2,7 @@ package com.practice.afisha.event;
 
 import com.practice.afisha.category.Category;
 import com.practice.afisha.compilation.Compilation;
+import com.practice.afisha.rating.Rating;
 import com.practice.afisha.request.Request;
 import com.practice.afisha.user.User;
 import jakarta.persistence.*;
@@ -52,4 +53,6 @@ public class Event {
     final List<Request> requests = new ArrayList<>();
     @ManyToMany
     final List<Compilation> compilations = new ArrayList<>();
+    @OneToMany(mappedBy = "event")
+    final List<Rating> ratings = new ArrayList<>();
 }

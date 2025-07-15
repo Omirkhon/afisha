@@ -1,14 +1,16 @@
-DROP TABLE IF EXISTS requests;
-
-DROP TABLE IF EXISTS events_compilations;
-
-DROP TABLE IF EXISTS compilations;
-
-DROP TABLE IF EXISTS events;
-
-DROP TABLE IF EXISTS categories;
-
-DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS ratings;
+--
+-- DROP TABLE IF EXISTS requests;
+--
+-- DROP TABLE IF EXISTS events_compilations;
+--
+-- DROP TABLE IF EXISTS compilations;
+--
+-- DROP TABLE IF EXISTS events;
+--
+-- DROP TABLE IF EXISTS categories;
+--
+-- DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users (
     id serial primary key,
@@ -59,4 +61,12 @@ CREATE TABLE IF NOT EXISTS requests (
     event_id int references events(id),
     requester_id int references users(id),
     status varchar not null
+);
+
+CREATE TABLE IF NOT EXISTS ratings (
+    id serial primary key,
+    status varchar(50) not null,
+    rated_at timestamp without time zone not null,
+    user_id int references users (id) not null,
+    event_id int references events (id) not null
 );

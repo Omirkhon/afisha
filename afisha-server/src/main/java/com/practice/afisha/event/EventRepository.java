@@ -235,4 +235,21 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(String text, String text2,
                                                                                                                                                LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                                                                                                                boolean paid, Pageable pageable);
+
+    @Query("select e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid, " +
+            "(count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) as likes_ratio " +
+            "from Event e " +
+            "left join Rating r on e.id = r.event.id " +
+            "group by e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid " +
+            "order by (count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) desc")
+    Page<EventRatingDto> findAllSortedByLikesRatio(Pageable pageable);
+
+    @Query("select e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid, " +
+            "(count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) as likes_ratio " +
+            "from Event e " +
+            "left join Rating r on e.id = r.event.id " +
+            "group by e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid " +
+            "order by (count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) desc " +
+            "limit 1")
+    EventRatingDto findTheMostLikedEvent();
 }

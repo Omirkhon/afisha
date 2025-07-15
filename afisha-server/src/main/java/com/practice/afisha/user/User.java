@@ -1,6 +1,7 @@
 package com.practice.afisha.user;
 
 import com.practice.afisha.event.Event;
+import com.practice.afisha.rating.Rating;
 import com.practice.afisha.request.Request;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,4 +25,6 @@ public class User {
     final List<Request> requests = new ArrayList<>();
     @OneToMany(mappedBy = "initiator")
     final List<Event> events = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    final List<Rating> ratings = new ArrayList<>();
 }

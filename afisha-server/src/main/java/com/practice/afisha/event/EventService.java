@@ -283,4 +283,13 @@ public class EventService {
     public Event findById(int id) {
         return eventRepository.findByIdAndState(id, EventState.PUBLISHED).orElseThrow(() -> new NotFoundException("Событие по id=" + id + " не найдено."));
     }
+
+    public List<EventRatingDto> findAllSortedByLikesRatio(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return eventRepository.findAllSortedByLikesRatio(pageable).getContent();
+    }
+
+    public EventRatingDto findTheMostLikedEvent() {
+        return eventRepository.findTheMostLikedEvent();
+    }
 }
