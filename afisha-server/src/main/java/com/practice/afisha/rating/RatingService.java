@@ -5,6 +5,9 @@ import com.practice.afisha.error.NotFoundException;
 import com.practice.afisha.event.Event;
 import com.practice.afisha.event.EventRatingDto;
 import com.practice.afisha.event.EventRepository;
+import com.practice.afisha.request.Request;
+import com.practice.afisha.request.RequestRepository;
+import com.practice.afisha.request.RequestStatus;
 import com.practice.afisha.user.User;
 import com.practice.afisha.user.UserRatingDto;
 import com.practice.afisha.user.UserRepository;
@@ -22,8 +25,16 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
 
     public Rating create(boolean liked, int userId, int eventId) {
+        Request request = requestRepository.findAllByRequesterIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new ConflictException("Оценку можно оставить только в случае участия в событии."));
+
+        if (request.getStatus() != RequestStatus.CONFIRMED) {
+            throw new ConflictException("Оценку можно оставить только в случае участия в событии.");
+        }
+
         if (ratingRepository.findByUserIdAndEventId(userId, eventId).isPresent()) {
             throw new ConflictException("Вы уже оставили оценку этому событию.");
         }

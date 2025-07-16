@@ -173,7 +173,7 @@ public class UserService {
     }
 
     public Request createRequest(int userId, int eventId) {
-        if (!requestRepository.findAllByRequesterIdAndEventId(userId, eventId).isEmpty()) {
+        if (requestRepository.findAllByRequesterIdAndEventId(userId, eventId).isPresent()) {
             throw new ConflictException("Запрос на участие в событии уже существует.");
         }
 
