@@ -45,7 +45,7 @@ public class RatingController {
         return ratingService.findAllSortedByLikesRatio(from, size);
     }
 
-    @GetMapping("/events/mostliked")
+    @GetMapping("/events/top")
     public EventRatingDto findTheMostLikedEvent() {
         return ratingService.findTheMostLikedEvent();
     }
@@ -64,13 +64,13 @@ public class RatingController {
         return ratingMapper.toDto(ratingService.findRatingsForAllUsersEvents(userId, from, size));
     }
 
-    @GetMapping("/users/likes")
+    @GetMapping("/initiators/likes")
     public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(@RequestParam(defaultValue = "0") int from,
                                                    @RequestParam(defaultValue = "10") int size) {
         return ratingService.findAllInitiatorsSortedByLikesRatio(from, size);
     }
 
-    @GetMapping("/users/mostliked")
+    @GetMapping("/initiators/top")
     public UserRatingDto findMostLikedInitiator() {
         return ratingService.findMostLikedInitiator();
     }
