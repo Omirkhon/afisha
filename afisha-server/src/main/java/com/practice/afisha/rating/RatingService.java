@@ -90,6 +90,16 @@ public class RatingService {
         return ratingRepository.findAllByEventId(pageable, eventId).getContent();
     }
 
+    public List<Rating> findByUserId(int userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return ratingRepository.findAllByUserId(pageable, userId).getContent();
+    }
+
+    public List<Rating> findRatingsForAllUsersEvents(int userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return ratingRepository.findAllRatingsForUsersEvents(pageable, userId).getContent();
+    }
+
     public List<EventRatingDto> findAllSortedByLikesRatio(int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.findAllSortedByLikesRatio(pageable).getContent();

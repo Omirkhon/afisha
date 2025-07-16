@@ -50,6 +50,20 @@ public class RatingController {
         return ratingService.findTheMostLikedEvent();
     }
 
+    @GetMapping("/users/{userId}")
+    public List<RatingDto> findByUserId(@PathVariable int userId,
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return ratingMapper.toDto(ratingService.findByUserId(userId, from, size));
+    }
+
+    @GetMapping("/initiators/{userId}")
+    public List<RatingDto> findRatingsForAllUsersEvents(@PathVariable int userId,
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return ratingMapper.toDto(ratingService.findRatingsForAllUsersEvents(userId, from, size));
+    }
+
     @GetMapping("/users/likes")
     public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(@RequestParam(defaultValue = "0") int from,
                                                    @RequestParam(defaultValue = "10") int size) {
