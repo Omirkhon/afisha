@@ -5,6 +5,9 @@ import com.practice.afisha.error.BadRequestException;
 import com.practice.afisha.error.ConflictException;
 import com.practice.afisha.error.NotFoundException;
 import com.practice.afisha.event.*;
+import com.practice.afisha.rating.Rating;
+import com.practice.afisha.rating.RatingRepository;
+import com.practice.afisha.rating.RatingStatus;
 import com.practice.afisha.request.*;
 import com.practice.afisha.utils.DateFormatter;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class UserService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
+    private final RatingRepository ratingRepository;
 
     public List<Event> findAllUsersEvents(int userId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
@@ -238,5 +242,96 @@ public class UserService {
     public void delete(int userId) {
         userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь по id=" + userId + "не найден."));
         userRepository.deleteById(userId);
+    }
+
+    public Rating createRating(boolean liked, int userId, int eventId) {
+        Request request = requestRepository.findAllByRequesterIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new ConflictException("Оценку можно оставить только в случае участия в событии."));
+
+        if (request.getStatus() != RequestStatus.CONFIRMED) {
+            throw new ConflictException("Оценку можно оставить только в случае участия в событии.");
+        }
+
+        if (ratingRepository.findByUserIdAndEventId(userId, eventId).isPresent()) {
+            throw new ConflictException("Вы уже оставили оценку этому событию.");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь по id=" + userId + " не найден."));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Событие по id=" + eventId + " не найдено."));
+        Rating rating = new Rating();
+        rating.setUser(user);
+        rating.setEvent(event);
+
+        if (liked) {
+            rating.setStatus(RatingStatus.LIKED);
+        } else {
+            rating.setStatus(RatingStatus.DISLIKED);
+        }
+        rating.setRatedAt(LocalDateTime.now().withNano(0));
+
+        return ratingRepository.save(rating);
+    }
+
+    public Rating updateRating(boolean liked, int ratingId, int userId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("Не найдено"));
+
+        if (rating.getUser().getId() != userId) {
+            throw new ConflictException("Нельзя менять оценку оставленную не вами.");
+        }
+
+        if (liked && rating.getStatus() != RatingStatus.LIKED) {
+            rating.setStatus(RatingStatus.LIKED);
+            rating.setRatedAt(LocalDateTime.now().withNano(0));
+            return ratingRepository.save(rating);
+        } else if (!liked && rating.getStatus() != RatingStatus.DISLIKED){
+            rating.setStatus(RatingStatus.DISLIKED);
+            rating.setRatedAt(LocalDateTime.now().withNano(0));
+            return ratingRepository.save(rating);
+        }
+        return rating;
+    }
+
+    public void deleteRating(int ratingId, int userId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("Не найдено."));
+        if (rating.getUser().getId() != userId) {
+            throw new ConflictException("Нельзя удалять оценку оставленную не вами.");
+        }
+        ratingRepository.deleteById(ratingId);
+    }
+
+    public List<Rating> findRatingsByEventId(int eventId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return ratingRepository.findAllByEventId(pageable, eventId).getContent();
+    }
+
+    public List<Rating> findRatingsByUserId(int userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return ratingRepository.findAllByUserId(pageable, userId).getContent();
+    }
+
+    public List<Rating> findRatingsForAllUsersEvents(int userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return ratingRepository.findAllRatingsForUsersEvents(pageable, userId).getContent();
+    }
+
+    public List<EventRatingDto> findAllEventsSortedByLikesRatio(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return eventRepository.findAllSortedByLikesRatio(pageable).getContent();
+    }
+
+    public EventRatingDto findTheMostLikedEvent() {
+        return eventRepository.findTheMostLikedEvent();
+    }
+
+    public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return userRepository.findAllInitiatorsSortedByLikesRatio(pageable).getContent();
+    }
+
+    public UserRatingDto findMostLikedInitiator() {
+        return userRepository.findMostLikedInitiator();
     }
 }

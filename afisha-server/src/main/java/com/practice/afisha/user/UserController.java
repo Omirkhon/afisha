@@ -1,6 +1,8 @@
 package com.practice.afisha.user;
 
 import com.practice.afisha.event.*;
+import com.practice.afisha.rating.RatingDto;
+import com.practice.afisha.rating.RatingMapper;
 import com.practice.afisha.request.EventRequestStatusUpdateRequest;
 import com.practice.afisha.request.EventRequestStatusUpdateResult;
 import com.practice.afisha.request.ParticipationRequestDto;
@@ -19,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
+    private final RatingMapper ratingMapper;
 
     @GetMapping("/{userId}/events")
     public List<EventShortDto> findAllUsersEvents(@PathVariable int userId,
@@ -67,5 +70,65 @@ public class UserController {
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto cancelOwnRequest(@PathVariable int userId, @PathVariable int requestId) {
         return requestMapper.toParticipationRequestDto(userService.cancelOwnRequest(userId, requestId));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{userId}/ratings/{eventId}")
+    public RatingDto createRating(@RequestParam boolean liked, @PathVariable int userId, @PathVariable int eventId) {
+        return ratingMapper.toDto(userService.createRating(liked, userId, eventId));
+    }
+
+    @PatchMapping("/{userId}/ratings/{ratingId}")
+    public RatingDto updateRating(@RequestParam boolean liked, @PathVariable int ratingId, @PathVariable int userId) {
+        return ratingMapper.toDto(userService.updateRating(liked, ratingId, userId));
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{userId}/ratings/{ratingId}")
+    public void deleteRating(@PathVariable int ratingId, @PathVariable int userId) {
+        userService.deleteRating(ratingId, userId);
+    }
+
+    @GetMapping("/ratings/events/{eventId}")
+    public List<RatingDto> findRatingsByEventId(@PathVariable int eventId,
+                                         @RequestParam(defaultValue = "0") int from,
+                                         @RequestParam(defaultValue = "10") int size) {
+        return ratingMapper.toDto(userService.findRatingsByEventId(eventId, from, size));
+    }
+
+    @GetMapping("/ratings/events/likes")
+    public List<EventRatingDto> findAllEventsByLikesRatio(@RequestParam(defaultValue = "0") int from,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        return userService.findAllEventsSortedByLikesRatio(from, size);
+    }
+
+    @GetMapping("/ratings/events/top")
+    public EventRatingDto findTheMostLikedEvent() {
+        return userService.findTheMostLikedEvent();
+    }
+
+    @GetMapping("/{userId}/ratings")
+    public List<RatingDto> findRatingsByUserId(@PathVariable int userId,
+                                        @RequestParam(defaultValue = "0") int from,
+                                        @RequestParam(defaultValue = "10") int size) {
+        return ratingMapper.toDto(userService.findRatingsByUserId(userId, from, size));
+    }
+
+    @GetMapping("{userId}/ratings/events")
+    public List<RatingDto> findRatingsForAllUsersEvents(@PathVariable int userId,
+                                                        @RequestParam(defaultValue = "0") int from,
+                                                        @RequestParam(defaultValue = "10") int size) {
+        return ratingMapper.toDto(userService.findRatingsForAllUsersEvents(userId, from, size));
+    }
+
+    @GetMapping("/ratings/likes")
+    public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(@RequestParam(defaultValue = "0") int from,
+                                                                   @RequestParam(defaultValue = "10") int size) {
+        return userService.findAllInitiatorsSortedByLikesRatio(from, size);
+    }
+
+    @GetMapping("/ratings/top")
+    public UserRatingDto findMostLikedInitiator() {
+        return userService.findMostLikedInitiator();
     }
 }
