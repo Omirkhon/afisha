@@ -251,5 +251,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "group by e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid " +
             "order by (count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) desc " +
             "limit 1")
-    EventRatingDto findTheMostLikedEvent();
+    Optional<EventRatingDto> findTheMostLikedEvent();
 }

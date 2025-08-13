@@ -30,5 +30,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "group by u.id, u.name " +
             "order by (count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) desc " +
             "limit 1")
-    UserRatingDto findMostLikedInitiator();
+    Optional<UserRatingDto> findMostLikedInitiator();
 }

@@ -323,7 +323,8 @@ public class UserService {
     }
 
     public EventRatingDto findTheMostLikedEvent() {
-        return eventRepository.findTheMostLikedEvent();
+        return eventRepository.findTheMostLikedEvent()
+                .orElseThrow(() -> new NotFoundException("Рейтинг отсутствует."));
     }
 
     public List<UserRatingDto> findAllInitiatorsSortedByLikesRatio(int from, int size) {
@@ -332,6 +333,7 @@ public class UserService {
     }
 
     public UserRatingDto findMostLikedInitiator() {
-        return userRepository.findMostLikedInitiator();
+        return userRepository.findMostLikedInitiator()
+                .orElseThrow(() -> new NotFoundException("Рейтинг отсутствует."));
     }
 }
