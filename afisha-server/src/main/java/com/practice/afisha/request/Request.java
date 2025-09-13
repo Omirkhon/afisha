@@ -3,8 +3,7 @@ package com.practice.afisha.request;
 import com.practice.afisha.event.Event;
 import com.practice.afisha.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
@@ -13,6 +12,9 @@ import java.time.LocalDateTime;
 @Table(name = "requests")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Data
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

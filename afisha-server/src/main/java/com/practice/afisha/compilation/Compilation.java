@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 import java.util.ArrayList;
 import java.util.List;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
 @Entity
 @Table(name = "compilations")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

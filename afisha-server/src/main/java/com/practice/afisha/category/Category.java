@@ -2,17 +2,19 @@ package com.practice.afisha.category;
 
 import com.practice.afisha.event.Event;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "categories")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -23,7 +23,7 @@ public class EventService {
     public List<Event> findFilteredEvents(Integer[] users, String[] states,
                                           Integer[] categories, String rangeStart,
                                           String rangeEnd, int from, int size) {
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
 
         LocalDateTime start;
         LocalDateTime end;
@@ -93,17 +93,15 @@ public class EventService {
 
                 return eventRepository.findAllByCategoryIdInAndEventDateAfterAndEventDateBeforeOrderById(
                         categoriesList, start, end, pageable).getContent();
-            }
-            if (categories == null && users == null) {
+            } else {
                 return eventRepository.findAllByEventDateAfterAndEventDateBeforeOrderById(
                         start, end, pageable).getContent();
             }
         }
-        return List.of();
     }
 
     public Event update(int eventId, UpdateEventAdminRequest updatedEvent) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие по id="+eventId+" не найдено."));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие по id=" + eventId + " не найдено."));
 
         if (updatedEvent.getEventDate() != null && DateFormatter.toLocalDateTime(updatedEvent.getEventDate()).isBefore(LocalDateTime.now())) {
             throw new BadRequestException("Нельзя менять дату на уже наступившую.");
@@ -125,7 +123,8 @@ public class EventService {
         }
 
         if (updatedEvent.getStateAction() != null &&
-                updatedEvent.getStateAction().equals(AdminStateAction.PUBLISH_EVENT.toString())) {
+                updatedEvent.getStateAction()
+                        .equals(AdminStateAction.PUBLISH_EVENT.toString())) {
             event.setState(EventState.PUBLISHED);
         } else if (updatedEvent.getStateAction() != null && updatedEvent.getStateAction().equals(AdminStateAction.REJECT_EVENT.toString())) {
             event.setState(EventState.CANCELED);
@@ -135,7 +134,7 @@ public class EventService {
             event.setAnnotation(updatedEvent.getAnnotation());
         }
         if (updatedEvent.getCategory() != 0) {
-            event.setCategory(categoryRepository.findById(updatedEvent.getCategory()).orElseThrow(() -> new NotFoundException("Категория по id="+eventId+" не найдена.")));
+            event.setCategory(categoryRepository.findById(updatedEvent.getCategory()).orElseThrow(() -> new NotFoundException("Категория по id=" + eventId + " не найдена.")));
         }
         if (updatedEvent.getDescription() != null) {
             event.setDescription(updatedEvent.getDescription());
@@ -164,9 +163,9 @@ public class EventService {
     }
 
     public List<Event> findFilteredAndSortedEvents(String text, Integer[] categories, Boolean paid,
-                                          String rangeStart, String rangeEnd,
-                                          boolean onlyAvailable, String sort,
-                                          int from, int size) {
+                                                   String rangeStart, String rangeEnd,
+                                                   boolean onlyAvailable, String sort,
+                                                   int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime start;
         LocalDateTime end;
@@ -195,7 +194,7 @@ public class EventService {
                         paid, categoriesIds, pageable).getContent();
             } else if (sort.equals("VIEWS") && onlyAvailable && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                return eventRepository.findAvailableEventsByCategoryIdInAndPaidOrderByViews(text, text, start, end,
+                return eventRepository.findAvailableEventsByCategoryIdInAndPaid(text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
             } else if (sort.equals("EVENT_DATE") && onlyAvailable && categories != null) {
                 List<Integer> categoriesIds = List.of(categories);
@@ -211,14 +210,14 @@ public class EventService {
                         text, text, start, end,
                         paid, pageable).getContent();
             } else if (sort.equals("VIEWS") && onlyAvailable && paid != null) {
-                return eventRepository.findAvailableEventsByPaidOrderByViews(
+                return eventRepository.findAvailableEventsByPaid(
                         text, text, start, end,
                         paid, pageable).getContent();
             } else if (sort.equals("EVENT_DATE") && onlyAvailable) {
                 return eventRepository.findAvailableEventsOrderByEventDate(
                         text, text, start, end, pageable).getContent();
             } else if (sort.equals("VIEWS") && onlyAvailable) {
-                return eventRepository.findAvailableEventsOrderByViews(
+                return eventRepository.findAvailableEvents(
                         text, text, start, end, pageable).getContent();
             } else if (sort.equals("EVENT_DATE") && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
@@ -227,11 +226,11 @@ public class EventService {
                         paid, categoriesIds, pageable).getContent();
             } else if (sort.equals("VIEWS") && categories != null && paid != null) {
                 List<Integer> categoriesIds = List.of(categories);
-                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdIn(
                         text, text, start, end,
                         paid, categoriesIds, pageable).getContent();
             } else if (sort.equals("VIEWS") && paid != null) {
-                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(
                         text, text, start, end,
                         paid, pageable).getContent();
             } else if (sort.equals("EVENT_DATE") && paid != null) {
@@ -239,7 +238,7 @@ public class EventService {
                         text, text, start, end,
                         paid, pageable).getContent();
             } else if (sort.equals("VIEWS")) {
-                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByViews(
+                return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNull(
                         text, text, start, end, pageable).getContent();
             } else if (sort.equals("EVENT_DATE")) {
                 return eventRepository.findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByEventDate(

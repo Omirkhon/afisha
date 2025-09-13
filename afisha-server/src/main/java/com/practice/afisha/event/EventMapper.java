@@ -22,7 +22,6 @@ public class EventMapper {
         shortDto.setEventDate(DateFormatter.toString(event.getEventDate()));
         shortDto.setConfirmedRequests(event.getConfirmedRequests());
         shortDto.setTitle(event.getTitle());
-        shortDto.setViews(event.getViews());
         shortDto.setInitiator(userMapper.toShortDto(event.getInitiator()));
         shortDto.setCategory(categoryMapper.toDto(event.getCategory()));
 

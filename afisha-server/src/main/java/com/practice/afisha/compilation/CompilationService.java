@@ -1,6 +1,7 @@
 package com.practice.afisha.compilation;
 
 import com.practice.afisha.error.NotFoundException;
+import com.practice.afisha.event.Event;
 import com.practice.afisha.event.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,13 +32,16 @@ public class CompilationService {
 
     public Compilation create(NewCompilationDto newCompilation) {
         Compilation compilation = new Compilation();
+        List<Event> events = eventRepository.findByIdIn(newCompilation.getEvents());
+
         if (newCompilation.getPinned() != null) {
             compilation.setPinned(newCompilation.getPinned());
         } else {
             compilation.setPinned(false);
         }
+
         compilation.setTitle(newCompilation.getTitle());
-        compilation.getEvents().addAll(eventRepository.findByIdIn(newCompilation.getEvents()));
+        compilation.getEvents().addAll(events);
 
         return compilationRepository.save(compilation);
     }

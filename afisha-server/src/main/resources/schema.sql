@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS events (
     participant_limit int not null,
     state varchar not null,
     initiator_id int references users(id),
-    views int,
     confirmed_requests int,
     lon float not null,
     lat float not null,

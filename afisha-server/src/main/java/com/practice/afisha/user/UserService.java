@@ -1,5 +1,6 @@
 package com.practice.afisha.user;
 
+import com.practice.afisha.category.Category;
 import com.practice.afisha.category.CategoryRepository;
 import com.practice.afisha.error.BadRequestException;
 import com.practice.afisha.error.ConflictException;
@@ -37,38 +38,46 @@ public class UserService {
     }
 
     public Event createEvent(int userId, NewEventDto newEvent) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         LocalDateTime eventDate = DateFormatter.toLocalDateTime(newEvent.getEventDate());
+        Category category = categoryRepository.findById(newEvent.getCategory())
+                .orElseThrow(() -> new NotFoundException("Категория не найдена"));
+
         if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new BadRequestException("Событие не может быть создано меньше чем за 2 часа до его начала.");
         }
 
-        Event event = new Event();
-        event.setAnnotation(newEvent.getAnnotation());
-        event.setCreatedOn(LocalDateTime.now());
-        event.setEventDate(eventDate);
-        event.setCategory(categoryRepository.findById(newEvent.getCategory()).orElseThrow(() -> new NotFoundException("Категория не найдена")));
-        event.setInitiator(user);
-        event.setDescription(newEvent.getDescription());
+        Event event = Event.builder()
+                .annotation(newEvent.getAnnotation())
+                .createdOn(LocalDateTime.now())
+                .eventDate(eventDate)
+                .category(category)
+                .initiator(user)
+                .description(newEvent.getDescription())
+                .title(newEvent.getTitle())
+                .lon(newEvent.getLocation().getLon())
+                .lat(newEvent.getLocation().getLat())
+                .state(EventState.PENDING)
+                .build();
+
         if (newEvent.getParticipantLimit() == null) {
             event.setParticipantLimit(0);
         } else {
             event.setParticipantLimit(newEvent.getParticipantLimit());
         }
-        event.setTitle(newEvent.getTitle());
-        event.setLon(newEvent.getLocation().getLon());
-        event.setLat(newEvent.getLocation().getLat());
+
         if (newEvent.getPaid() == null) {
             event.setPaid(false);
         } else {
             event.setPaid(newEvent.getPaid());
         }
+
         if (newEvent.getRequestModeration() == null) {
             event.setRequestModeration(true);
         } else {
             event.setRequestModeration(newEvent.getRequestModeration());
         }
-        event.setState(EventState.PENDING);
 
         eventRepository.save(event);
         return event;
@@ -92,7 +101,6 @@ public class UserService {
         if (eventUpdate.getEventDate() != null && DateFormatter.toLocalDateTime(eventUpdate.getEventDate()).isBefore(LocalDateTime.now().plusHours(2))) {
             throw new BadRequestException("Переназначать можно только на 2 часа раньше времени события.");
         }
-
         if (eventUpdate.getAnnotation() != null) {
             event.setAnnotation(eventUpdate.getAnnotation());
         }
@@ -147,13 +155,13 @@ public class UserService {
             throw new ConflictException("Вы не организатор события");
         }
         for (Integer requestId : requestUpdate.getRequestIds()) {
-            Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Запрос по id="+requestId+" не найден."));
+            Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Запрос по id=" + requestId + " не найден."));
 
             if (request.getStatus() != RequestStatus.PENDING) {
                 throw new ConflictException("Только запросы в ожидании могут быть отклонены или подтверждены.");
             }
             if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= event.getConfirmedRequests()
-            && event.isRequestModeration()) {
+                    && event.isRequestModeration()) {
                 request.setStatus(RequestStatus.REJECTED);
                 requestRepository.save(request);
                 throw new ConflictException("Запросы на участие больше не принимаются");
@@ -193,10 +201,12 @@ public class UserService {
             throw new ConflictException("Событие не опубликовано");
         }
 
-        Request request = new Request();
-        request.setCreated(LocalDateTime.now().withNano(0));
-        request.setRequester(user);
-        request.setEvent(event);
+        Request request = Request.builder()
+                .created(LocalDateTime.now().withNano(0))
+                .requester(user)
+                .event(event)
+                .build();
+
         if (!event.isRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(RequestStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -232,9 +242,11 @@ public class UserService {
         if (!userRepository.findByEmail(newUser.getEmail()).equals(Optional.empty())) {
             throw new ConflictException("Пользователь с такой эл. почтой уже сущестует");
         }
-        User user = new User();
-        user.setName(newUser.getName());
-        user.setEmail(newUser.getEmail());
+
+        User user = User.builder()
+                .name(newUser.getName())
+                .email(newUser.getEmail())
+                .build();
 
         return userRepository.save(user);
     }
@@ -259,16 +271,18 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь по id=" + userId + " не найден."));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие по id=" + eventId + " не найдено."));
-        Rating rating = new Rating();
-        rating.setUser(user);
-        rating.setEvent(event);
+
+        Rating rating = Rating.builder()
+                .user(user)
+                .event(event)
+                .ratedAt(LocalDateTime.now()
+                .withNano(0)).build();
 
         if (liked) {
             rating.setStatus(RatingStatus.LIKED);
         } else {
             rating.setStatus(RatingStatus.DISLIKED);
         }
-        rating.setRatedAt(LocalDateTime.now().withNano(0));
 
         return ratingRepository.save(rating);
     }
@@ -285,7 +299,7 @@ public class UserService {
             rating.setStatus(RatingStatus.LIKED);
             rating.setRatedAt(LocalDateTime.now().withNano(0));
             return ratingRepository.save(rating);
-        } else if (!liked && rating.getStatus() != RatingStatus.DISLIKED){
+        } else if (!liked && rating.getStatus() != RatingStatus.DISLIKED) {
             rating.setStatus(RatingStatus.DISLIKED);
             rating.setRatedAt(LocalDateTime.now().withNano(0));
             return ratingRepository.save(rating);

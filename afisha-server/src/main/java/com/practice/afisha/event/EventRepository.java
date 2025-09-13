@@ -42,26 +42,26 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
                                                                                                                                                                boolean paid, List<Integer> categoryIds,
                                                                                                                                                                Pageable pageable);
 
-    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdInOrderByViews(String text, String text2,
-                                                                                                                                                           LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                                                                                                                           boolean paid, List<Integer> categoryIds,
-                                                                                                                                                           Pageable pageable);
+    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdIn(String text, String text2,
+                                                                                                                                               LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                                                                                                               boolean paid, List<Integer> categoryIds,
+                                                                                                                                               Pageable pageable);
 
     Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByEventDate(String text, String text2,
                                                                                                                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                                                                                                                 boolean paid, Pageable pageable);
 
-    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullOrderByViews(String text, String text2,
-                                                                                                                                            LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                                                                                                            boolean paid, Pageable pageable);
+    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(String text, String text2,
+                                                                                                                                LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                                                                                                boolean paid, Pageable pageable);
 
     Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByEventDate(String text, String text2,
                                                                                                                                          LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                                                                                                          Pageable pageable);
 
-    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullOrderByViews(String text, String text2,
-                                                                                                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                                                                                                     Pageable pageable);
+    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNull(String text, String text2,
+                                                                                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                                                                                         Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.annotation like %?1% " +
@@ -71,12 +71,11 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "and e.paid = ?5 " +
             "and e.category.id in ?6 " +
             "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests " +
-            "order by e.views")
-    Page<Event> findAvailableEventsByCategoryIdInAndPaidOrderByViews(String text, String text2,
-                                          LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                          boolean paid, List<Integer> categoryIds,
-                                          Pageable pageable);
+            "and e.participantLimit > e.confirmedRequests ")
+    Page<Event> findAvailableEventsByCategoryIdInAndPaid(String text, String text2,
+                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                         boolean paid, List<Integer> categoryIds,
+                                                         Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.annotation like %?1% " +
@@ -85,8 +84,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "and e.eventDate < ?4 " +
             "and e.category.id in ?5 " +
             "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests " +
-            "order by e.views")
+            "and e.participantLimit > e.confirmedRequests")
     Page<Event> findAvailableEventsByCategoryIdInOrderByViews(String text, String text2,
                                                               LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                               List<Integer> categoryIds, Pageable pageable);
@@ -98,11 +96,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "and e.eventDate < ?4 " +
             "and e.paid = ?5 " +
             "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests " +
-            "order by e.views")
-    Page<Event> findAvailableEventsByPaidOrderByViews(String text, String text2,
-                                                      LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                      boolean paid, Pageable pageable);
+            "and e.participantLimit > e.confirmedRequests ")
+    Page<Event> findAvailableEventsByPaid(String text, String text2,
+                                          LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                          boolean paid, Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.annotation like %?1% " +
@@ -110,11 +107,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "and e.eventDate > ?3 " +
             "and e.eventDate < ?4 " +
             "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests " +
-            "order by e.views")
-    Page<Event> findAvailableEventsOrderByViews(String text, String text2,
-                                                      LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                      Pageable pageable);
+            "and e.participantLimit > e.confirmedRequests ")
+    Page<Event> findAvailableEvents(String text, String text2,
+                                    LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                    Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.annotation like %?1% " +
@@ -169,19 +165,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
                                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                     Pageable pageable);
 
-    @Query("select e from Event e " +
-            "where e.annotation like %?1% " +
-            "and e.description like %?2% " +
-            "and e.eventDate > ?3 " +
-            "and e.eventDate < ?4 " +
-            "and e.paid = ?5 " +
-            "and e.category.id in ?6 " +
-            "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests ")
-    Page<Event> findAvailableEventsByCategoryIdInAndPaid(String text, String text2,
-                                                    LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                    boolean paid, List<Integer> categoryIds,
-                                                    Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.annotation like %?1% " +
@@ -195,46 +178,14 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
                                                        LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                        List<Integer> categoryIds, Pageable pageable);
 
-    @Query("select e from Event e " +
-            "where e.annotation like %?1% " +
-            "and e.description like %?2% " +
-            "and e.eventDate > ?3 " +
-            "and e.eventDate < ?4 " +
-            "and e.paid = ?5 " +
-            "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests ")
-    Page<Event> findAvailableEventsByPaid(String text, String text2,
-                                               LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                               boolean paid, Pageable pageable);
-
-    @Query("select e from Event e " +
-            "where e.annotation like %?1% " +
-            "and e.description like %?2% " +
-            "and e.eventDate > ?3 " +
-            "and e.eventDate < ?4 " +
-            "and e.state = 'PUBLISHED' " +
-            "and e.participantLimit > e.confirmedRequests ")
-    Page<Event> findAvailableEvents(String text, String text2,
-                                    LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                    Pageable pageable);
-
     Optional<Event> findByIdAndState(int id, EventState state);
 
     List<Event> findByIdIn(Collection<Integer> ids);
-
-    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNullAndCategoryIdIn(String text, String text2,
-                                                                                                                                               LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                                                                                                               boolean paid, List<Integer> categoryIds,
-                                                                                                                                               Pageable pageable);
 
     Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPublishedOnNotNullAndCategoryIdIn(String text, String text2,
                                                                                                                                         LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                                                                                                         List<Integer> categoryIds,
                                                                                                                                         Pageable pageable);
-
-    Page<Event> findAllByAnnotationContainsOrDescriptionContainsAndEventDateAfterAndEventDateBeforeAndPaidAndPublishedOnNotNull(String text, String text2,
-                                                                                                                                               LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                                                                                                                               boolean paid, Pageable pageable);
 
     @Query("select e.id, e.title, e.description, e.annotation, e.confirmedRequests, e.eventDate, e.paid, " +
             "(count(case r.status when 'LIKED' then 1 end) - count(case r.status when 'DISLIKED' then 1 end)) as likes_ratio " +

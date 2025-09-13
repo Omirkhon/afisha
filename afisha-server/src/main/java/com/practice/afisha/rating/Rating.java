@@ -3,16 +3,18 @@ package com.practice.afisha.rating;
 import com.practice.afisha.event.Event;
 import com.practice.afisha.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ratings")
-@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

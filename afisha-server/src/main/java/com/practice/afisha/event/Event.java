@@ -6,18 +6,20 @@ import com.practice.afisha.rating.Rating;
 import com.practice.afisha.request.Request;
 import com.practice.afisha.user.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name = "events")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Data
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,6 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     User initiator;
-    int views;
     @JoinColumn(name = "confirmed_requests")
     int confirmedRequests = 0;
     float lon;
